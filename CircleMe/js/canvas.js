@@ -89,11 +89,15 @@ function User(x, y, radius, color) {
     this.color = color
 
     this.draw = function() {
+      c.save();
       c.beginPath()
       c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
       c.fillStyle = this.color
+      c.shadowColor = this.color;
+      c.shadowBlur = 15;
       c.fill()
       c.closePath()
+      c.restore();
     }
 
     this.mouseMove = function(dx, dy) {
@@ -132,8 +136,8 @@ function MiniBalls(x, y, radius, color) {
   this.y = y
   this.radius = radius
   this.color = color
-  this.xVelocity = 1;
-  this.yVelocity = 1;
+  this.xVelocity = Math.sin(randomIntFromRange(1,100));
+  this.yVelocity = Math.sin(randomIntFromRange(1,100));;
 
   this.draw = function() {
     c.beginPath()
@@ -143,10 +147,10 @@ function MiniBalls(x, y, radius, color) {
     c.closePath()
   }
 
-  this.update = function(dx, dy) {
-    this.x = this.x + dx;
-    this.y = this.y - dy;
-    this.draw()
+  this.update = function() {
+    this.x = this.x + this.xVelocity;
+    this.y = this.y + this.yVelocity;
+    this.draw();
   }
 }
 
@@ -210,16 +214,24 @@ function animate() {
     obj.update();
   });
 
-  miniBallsObjArray.forEach(object => {
-    object.update(1,1);
-  });
-
+  
   //greenBall.downdate(1,0.1);
   //greenBall.draw();
 
   blueBallObj.mouseMove(mouse.x, mouse.y);
   //blueBallObj.collision(greenBallArray);
   blueBallObj.collision(greenBallsObjArray);
+  
+  miniBallsObjArray.forEach((object, index) => {
+    setTimeout(() => {
+      object.radius -= 1;
+    }, 1000); 
+    if (object.radius <= 0) {
+      miniBallsObjArray.splice(index, 1);
+    }
+    object.update();
+  });
+
    
   
 }
