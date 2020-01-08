@@ -1,3 +1,8 @@
+// below informations are for strictly games
+var points = 0;
+var lives = 2;
+
+
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
@@ -87,7 +92,12 @@ function User(x, y, radius, color) {
     this.y = y
     this.radius = radius
     this.color = color
-
+    this.lifeColors = [
+      {life: 1, color: '#FFFFFF'},
+      {life: 2, color: '#00CDFF'},
+      {life: 3, color: '#1300FF'},
+      {life: 4, color: '#FF00E0'},
+    ]
     this.draw = function() {
       c.save();
       c.beginPath()
@@ -100,13 +110,28 @@ function User(x, y, radius, color) {
       c.restore();
     }
 
+    this.changeColor = function() {
+      let colr = this.lifeColors[lives - 1];
+      // console.log(lives);
+      // console.log(this.lifeColors);
+      // console.log(colr);
+      this.color = colr.color;
+    }
+
+    this.calculateLives = function () {
+      if (lives <= 0) {
+        // logic to show game over
+      }
+      if (lives > 4) lives = 4;
+    }
+
     this.mouseMove = function(dx, dy) {
       this.x = dx;
       this.y = dy;
       this.draw()
     }
 
-    this.collision = function(ballsArray) {
+    this.greenBallsCollision = function(ballsArray) {
       
       for (let i = 0; i < ballsArray.length; i++) {
         let dist = distance(this.x, this.y, ballsArray[i].x, ballsArray[i].y);
@@ -117,13 +142,36 @@ function User(x, y, radius, color) {
         // remove them in array
         if (dist < 10) {
           points += 1;
-          document.getElementById("point").innerHTML = "Points : " + points;
+          document.getElementById("point").innerHTML = "Score : " + points;
           // reduce the radius to zero
           ballsArray[i].radius = 0;
 
           // create mini balls to scatter
           for(let j = 0; j < 5; j++) {
             miniBallsObjArray.push(new MiniBalls(ballsArray[i].x, ballsArray[i].y, 2, ballsArray[i].color))
+          }
+        }
+      }
+    }
+
+    this.redBallsCollision = function(ballsArray) {
+      for (let i = 0; i < ballsArray.length; i++) {
+        let dist = distance(this.x, this.y, ballsArray[i].x, ballsArray[i].y);
+        // document.getElementById("point").innerHTML = '  Point' + i + ':' + dist;
+        // consider the radius while collison
+        // default radius calculation - 10 is hardcoded
+        // destroy the green circle
+        // remove them in array
+        if (dist < 10) {
+          lives -= 1;
+          //console.log('document.getElementById("live").innerHTML', document.getElementById("live").innerHTML);
+          document.getElementById("live").innerHTML = "Lives : " + lives;
+          // reduce the radius to zero
+          ballsArray[i].radius = 0;
+
+          // create mini balls to scatter
+          for(let j = 0; j < 5; j++) {
+            miniBallsObjArray.push(new MiniBalls(ballsArray[i].x, ballsArray[i].y, 2, this.color));
           }
         }
       }
@@ -158,6 +206,7 @@ function MiniBalls(x, y, radius, color) {
 let rebBallsObjArray = [];
 let greenBallsObjArray = [];
 let miniBallsObjArray = [];
+let miniBurstBallsObjArray = [];
 let blueBallObj;
 
 // Reb balls - decreases points
@@ -188,22 +237,23 @@ function initGreenBalls() {
 // blue ball - user
 
 function initBlueBalls() {
-  let colorInFun = '#00CDFF'
+  //let colorInFun = '#00CDFF'
+  let colorInFun = '#FFFFFF'
   let radius = 8;
   let x = randomIntFromRange(100, 100);
   let y = randomIntFromRange(1000, 500);
   blueBallObj = new User(x, y, radius, colorInFun);
 }
 
-let greenBall = new Balls(300, 300, 8, '#00FF00');
-let greenBallArray = [];
-greenBallArray.push(greenBall);
 
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate)
   c.clearRect(0, 0, canvas.width, canvas.height)
-  rebBallsObjArray.forEach(object => {
+  rebBallsObjArray.forEach((object, index) => {
+    if (object.radius == 0) {
+      rebBallsObjArray.splice(index, 1);
+    }
     object.update();
   });
 
@@ -214,13 +264,11 @@ function animate() {
     obj.update();
   });
 
-  
-  //greenBall.downdate(1,0.1);
-  //greenBall.draw();
-
   blueBallObj.mouseMove(mouse.x, mouse.y);
-  //blueBallObj.collision(greenBallArray);
-  blueBallObj.collision(greenBallsObjArray);
+  blueBallObj.greenBallsCollision(greenBallsObjArray);
+  blueBallObj.redBallsCollision(rebBallsObjArray);
+  blueBallObj.calculateLives();
+  blueBallObj.changeColor();
   
   miniBallsObjArray.forEach((object, index) => {
     setTimeout(() => {
@@ -239,7 +287,7 @@ function animate() {
 setInterval(() => {
   initRedBalls();
   initGreenBalls();
-  console.log('Points', points);
+  // console.log('Points', points);
 }, 5000);
 
 
@@ -249,8 +297,7 @@ initGreenBalls();
 animate()
 
 
-// below informations are for strictly games
-var points = 0;
+
 
 function randomIntFromRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
