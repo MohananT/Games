@@ -19,9 +19,6 @@ html, body {
     text-align: center;
 }
 
-
-
-
 .canvas-container {
     flex-grow: 1;
     border-left: 5px solid #333333;
@@ -29,6 +26,16 @@ html, body {
     border-top: 5px solid #333333;
     cursor: none;
     overflow: hidden;
+    position: relative;
 }
 
-
+.modal {
+    display: none;
+    background: rgba(0, 0, 0, 0.527);
+    color: white;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    height: 80%;
+    width: 80%;
+}

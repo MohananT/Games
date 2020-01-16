@@ -5,6 +5,9 @@ import "../styles.css"
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
+
+const modal = document.getElementById('id-modal');
+const btnNewGame = document.getElementById('id-btn-newgame');
 const canvasContainerId = document.getElementById('canvas-container-id');
 
 canvas.width = canvasContainerId.offsetWidth;
@@ -23,9 +26,6 @@ function getXY(canvas, event) {
   }
 }
 
-const colors = ['#2185C5', '#7ECEFD', '#FFF6E5', '#FF7F66']
-
-
 // Event Listeners
 canvasContainerId.addEventListener('mousemove', (event) => {
   var obj = getXY(canvas, event);
@@ -39,6 +39,10 @@ addEventListener('resize', () => {
   canvas.height = canvasContainerId.offsetHeight;
   // init()
 })
+
+btnNewGame.addEventListener('click', (event) => {
+  
+});
 
 // Object
 class Balls {
@@ -90,6 +94,23 @@ class User {
     this.lives = 2;
   }
 
+  // getter ans setter
+  getPoints() {
+    return this.points;
+  }
+
+  getLives() {
+    return this.lives;
+  }
+
+  setLives(live) {
+    this.lives = live;
+  }
+
+  setPoints(pt) {
+    this.points = pt;
+  }
+
   draw() {
     c.save();
     c.beginPath()
@@ -103,7 +124,8 @@ class User {
   }
 
   changeColor() {
-    let colr = this.lifeColors[this.lives - 1];
+    let clrIndex = this.lives > 0 ? this.lives - 1 : 0;
+    let colr = this.lifeColors[clrIndex];
     // console.log(this.lives);
     // console.log(this.lifeColors);
     // console.log(colr);
@@ -200,8 +222,7 @@ class MiniBalls {
 let rebBallsObjArray = [];
 let greenBallsObjArray = [];
 let miniBallsObjArray = [];
-let miniBurstBallsObjArray = [];
-let blueBallObj;
+var blueBallObj;
 
 // Reb balls - decreases points
 function initRedBalls() {
@@ -239,6 +260,14 @@ function initBlueBalls() {
   blueBallObj = new User(x, y, radius, colorInFun);
 }
 
+function calculateGame() {
+  let lives = blueBallObj.getLives();
+  // console.log(lives);
+  if (lives <= 0) {
+    console.log(lives);
+    modal.style.display = "block";
+  }
+}
 
 // Animation Loop
 function animate() {
@@ -264,6 +293,9 @@ function animate() {
   blueBallObj.calculateLives();
   blueBallObj.changeColor();
 
+  // for modal popup
+  calculateGame();
+
   miniBallsObjArray.forEach((object, index) => {
     setTimeout(() => {
       object.radius -= 1;
@@ -273,8 +305,6 @@ function animate() {
     }
     object.update();
   });
-
-
 
 }
 

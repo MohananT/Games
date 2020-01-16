@@ -97,7 +97,7 @@
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = module.exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "html, body {\r\n    margin: 0;\r\n    height: 100%;\r\n    background: #222222;\r\n}\r\n\r\n.container {\r\n    margin: 0 10%;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n}\r\n\r\n.games-header {\r\n    display: flex;\r\n    justify-content: space-between;\r\n    height: 30px;\r\n    color: white;\r\n    text-align: center;\r\n}\r\n\r\n\r\n\r\n\r\n.canvas-container {\r\n    flex-grow: 1;\r\n    border-left: 5px solid #333333;\r\n    border-right: 5px solid #333333;\r\n    border-top: 5px solid #333333;\r\n    cursor: none;\r\n    overflow: hidden;\r\n}\r\n\r\n\r\n", ""]);
+exports.push([module.i, "html, body {\r\n    margin: 0;\r\n    height: 100%;\r\n    background: #222222;\r\n}\r\n\r\n.container {\r\n    margin: 0 10%;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n}\r\n\r\n.games-header {\r\n    display: flex;\r\n    justify-content: space-between;\r\n    height: 30px;\r\n    color: white;\r\n    text-align: center;\r\n}\r\n\r\n.canvas-container {\r\n    flex-grow: 1;\r\n    border-left: 5px solid #333333;\r\n    border-right: 5px solid #333333;\r\n    border-top: 5px solid #333333;\r\n    cursor: none;\r\n    overflow: hidden;\r\n    position: relative;\r\n}\r\n\r\n.modal {\r\n    display: none;\r\n    background: rgba(0, 0, 0, 0.527);\r\n    color: white;\r\n    position: absolute;\r\n    top: 10%;\r\n    left: 10%;\r\n    height: 80%;\r\n    width: 80%;\r\n}\r\n", ""]);
 
 
 /***/ }),
@@ -505,6 +505,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 var canvas = document.querySelector('canvas');
 var c = canvas.getContext('2d');
+var modal = document.getElementById('id-modal');
+var btnNewGame = document.getElementById('id-btn-newgame');
 var canvasContainerId = document.getElementById('canvas-container-id');
 canvas.width = canvasContainerId.offsetWidth;
 canvas.height = canvasContainerId.offsetHeight;
@@ -519,9 +521,8 @@ function getXY(canvas, event) {
     x: event.clientX - rect.left,
     y: event.clientY - rect.top
   };
-}
+} // Event Listeners
 
-var colors = ['#2185C5', '#7ECEFD', '#FFF6E5', '#FF7F66']; // Event Listeners
 
 canvasContainerId.addEventListener('mousemove', function (event) {
   var obj = getXY(canvas, event);
@@ -531,7 +532,8 @@ canvasContainerId.addEventListener('mousemove', function (event) {
 addEventListener('resize', function () {
   canvas.width = canvasContainerId.offsetWidth;
   canvas.height = canvasContainerId.offsetHeight; // init()
-}); // Object
+});
+btnNewGame.addEventListener('click', function (event) {}); // Object
 
 var Balls =
 /*#__PURE__*/
@@ -601,9 +603,30 @@ function () {
 
     this.points = 0;
     this.lives = 2;
-  }
+  } // getter ans setter
+
 
   _createClass(User, [{
+    key: "getPoints",
+    value: function getPoints() {
+      return this.points;
+    }
+  }, {
+    key: "getLives",
+    value: function getLives() {
+      return this.lives;
+    }
+  }, {
+    key: "setLives",
+    value: function setLives(live) {
+      this.lives = live;
+    }
+  }, {
+    key: "setPoints",
+    value: function setPoints(pt) {
+      this.points = pt;
+    }
+  }, {
     key: "draw",
     value: function draw() {
       c.save();
@@ -619,7 +642,8 @@ function () {
   }, {
     key: "changeColor",
     value: function changeColor() {
-      var colr = this.lifeColors[this.lives - 1]; // console.log(this.lives);
+      var clrIndex = this.lives > 0 ? this.lives - 1 : 0;
+      var colr = this.lifeColors[clrIndex]; // console.log(this.lives);
       // console.log(this.lifeColors);
       // console.log(colr);
 
@@ -729,7 +753,6 @@ function () {
 var rebBallsObjArray = [];
 var greenBallsObjArray = [];
 var miniBallsObjArray = [];
-var miniBurstBallsObjArray = [];
 var blueBallObj; // Reb balls - decreases points
 
 function initRedBalls() {
@@ -766,6 +789,15 @@ function initBlueBalls() {
   var x = _utils__WEBPACK_IMPORTED_MODULE_0___default.a.randomIntFromRange(100, 100);
   var y = _utils__WEBPACK_IMPORTED_MODULE_0___default.a.randomIntFromRange(1000, 500);
   blueBallObj = new User(x, y, radius, colorInFun);
+}
+
+function calculateGame() {
+  var lives = blueBallObj.getLives(); // console.log(lives);
+
+  if (lives <= 0) {
+    console.log(lives);
+    modal.style.display = "block";
+  }
 } // Animation Loop
 
 
@@ -790,7 +822,9 @@ function animate() {
   blueBallObj.greenBallsCollision(greenBallsObjArray);
   blueBallObj.redBallsCollision(rebBallsObjArray);
   blueBallObj.calculateLives();
-  blueBallObj.changeColor();
+  blueBallObj.changeColor(); // for modal popup
+
+  calculateGame();
   miniBallsObjArray.forEach(function (object, index) {
     setTimeout(function () {
       object.radius -= 1;
