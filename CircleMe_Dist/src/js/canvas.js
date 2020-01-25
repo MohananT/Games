@@ -41,7 +41,8 @@ addEventListener('resize', () => {
 })
 
 btnNewGame.addEventListener('click', (event) => {
-  
+  blueBallObj.reset();
+  modal.style.display = "none";
 });
 
 // Object
@@ -137,6 +138,11 @@ class User {
       // logic to show game over
     }
     if (this.lives > 4) this.lives = 4;
+  }
+
+  reset() {
+    this.lives = 2;
+    this.points = 2;
   }
 
   mouseMove(dx, dy) {

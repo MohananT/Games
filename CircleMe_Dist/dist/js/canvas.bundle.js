@@ -97,7 +97,7 @@
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = module.exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "html, body {\r\n    margin: 0;\r\n    height: 100%;\r\n    background: #222222;\r\n}\r\n\r\n.container {\r\n    margin: 0 10%;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n}\r\n\r\n.games-header {\r\n    display: flex;\r\n    justify-content: space-between;\r\n    height: 30px;\r\n    color: white;\r\n    text-align: center;\r\n}\r\n\r\n.canvas-container {\r\n    flex-grow: 1;\r\n    border-left: 5px solid #333333;\r\n    border-right: 5px solid #333333;\r\n    border-top: 5px solid #333333;\r\n    cursor: none;\r\n    overflow: hidden;\r\n    position: relative;\r\n}\r\n\r\n.modal {\r\n    display: none;\r\n    background: rgba(0, 0, 0, 0.527);\r\n    color: white;\r\n    position: absolute;\r\n    top: 10%;\r\n    left: 10%;\r\n    height: 80%;\r\n    width: 80%;\r\n}\r\n", ""]);
+exports.push([module.i, "html, body {\r\n    margin: 0;\r\n    height: 100%;\r\n    background: #222222;\r\n}\r\n\r\n.container {\r\n    margin: 0 10%;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n}\r\n\r\n.games-header {\r\n    display: flex;\r\n    justify-content: space-between;\r\n    height: 30px;\r\n    color: white;\r\n    text-align: center;\r\n}\r\n\r\n.canvas-container {\r\n    flex-grow: 1;\r\n    border-left: 5px solid #333333;\r\n    border-right: 5px solid #333333;\r\n    border-top: 5px solid #333333;\r\n    cursor: none;\r\n    overflow: hidden;\r\n    position: relative;\r\n}\r\n\r\n.modal {\r\n    display: none;\r\n    background: rgba(0, 0, 0, 0.527);\r\n    color: white;\r\n    position: absolute;\r\n    top: 10%;\r\n    left: 10%;\r\n    height: 80%;\r\n    width: 80%;\r\n    \r\n}\r\n\r\n.modal-content{\r\n    display: grid;\r\n    margin: auto;\r\n}\r\n\r\n/* button styles */\r\n.glow-on-hover {\r\n    width: 220px;\r\n    height: 50px;\r\n    border: none;\r\n    outline: none;\r\n    color: #fff;\r\n    background: #111;\r\n    cursor: pointer;\r\n    position: relative;\r\n    z-index: 0;\r\n    border-radius: 10px;\r\n}\r\n\r\n.glow-on-hover:before {\r\n    content: '';\r\n    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);\r\n    position: absolute;\r\n    top: -2px;\r\n    left:-2px;\r\n    background-size: 400%;\r\n    z-index: -1;\r\n    filter: blur(5px);\r\n    width: calc(100% + 4px);\r\n    height: calc(100% + 4px);\r\n    animation: glowing 20s linear infinite;\r\n    opacity: 0;\r\n    transition: opacity .3s ease-in-out;\r\n    border-radius: 10px;\r\n}\r\n\r\n.glow-on-hover:active {\r\n    color: rgb(252, 0, 0)\r\n}\r\n\r\n.glow-on-hover:active:after {\r\n    background: transparent;\r\n}\r\n\r\n.glow-on-hover:hover:before {\r\n    opacity: 1;\r\n}\r\n\r\n.glow-on-hover:after {\r\n    z-index: -1;\r\n    content: '';\r\n    position: absolute;\r\n    width: 100%;\r\n    height: 100%;\r\n    background: #111;\r\n    left: 0;\r\n    top: 0;\r\n    border-radius: 10px;\r\n}\r\n\r\n@keyframes glowing {\r\n    0% { background-position: 0 0; }\r\n    50% { background-position: 400% 0; }\r\n    100% { background-position: 0 0; }\r\n}", ""]);
 
 
 /***/ }),
@@ -533,7 +533,10 @@ addEventListener('resize', function () {
   canvas.width = canvasContainerId.offsetWidth;
   canvas.height = canvasContainerId.offsetHeight; // init()
 });
-btnNewGame.addEventListener('click', function (event) {}); // Object
+btnNewGame.addEventListener('click', function (event) {
+  blueBallObj.reset();
+  modal.style.display = "none";
+}); // Object
 
 var Balls =
 /*#__PURE__*/
@@ -656,6 +659,12 @@ function () {
       }
 
       if (this.lives > 4) this.lives = 4;
+    }
+  }, {
+    key: "reset",
+    value: function reset() {
+      this.lives = 2;
+      this.points = 2;
     }
   }, {
     key: "mouseMove",
