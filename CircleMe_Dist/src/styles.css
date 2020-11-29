@@ -31,19 +31,25 @@ html, body {
 
 .modal {
     display: none;
-    background: rgba(0, 0, 0, 0.527);
+    background: rgb(0, 0, 0);
     color: white;
     position: absolute;
     top: 10%;
     left: 10%;
     height: 80%;
     width: 80%;
-    
+    /* position: relative; */
+}
+
+.modal:hover {
+    cursor: pointer;
 }
 
 .modal-content{
-    display: grid;
-    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 
 /* button styles */

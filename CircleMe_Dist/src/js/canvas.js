@@ -9,6 +9,8 @@ const c = canvas.getContext('2d')
 const modal = document.getElementById('id-modal');
 const btnNewGame = document.getElementById('id-btn-newgame');
 const canvasContainerId = document.getElementById('canvas-container-id');
+const score = document.getElementById('score');
+
 
 canvas.width = canvasContainerId.offsetWidth;
 canvas.height = canvasContainerId.offsetHeight;
@@ -271,6 +273,8 @@ function calculateGame() {
   // console.log(lives);
   if (lives <= 0) {
     console.log(lives);
+    score.innerHTML = "Score : " + blueBallObj.getPoints();
+    blueBallObj.reset();
     modal.style.display = "block";
   }
 }
